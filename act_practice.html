@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mini ACT Practice Test</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif;
+      background: #eef2f7;
+      min-height: 100vh;
+      color: #1a202c;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .container {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 16px 16px 40px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 22px 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 14px;
+    }
+
+    /* ── Intro ── */
+    .intro-hero { text-align: center; padding: 32px 0 20px; }
+    .intro-hero .emoji { font-size: 64px; line-height: 1; }
+    .intro-hero h1 { font-size: 26px; font-weight: 800; color: #1e3a5f; margin: 14px 0 8px; }
+    .intro-hero p { font-size: 15px; color: #64748b; line-height: 1.6; }
+
+    .section-list { list-style: none; margin: 4px 0 20px; }
+    .section-list li {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 13px 0; border-bottom: 1px solid #f1f5f9;
+    }
+    .section-list li:last-child { border-bottom: none; }
+    .section-list .s-icon { font-size: 22px; width: 34px; text-align: center; flex-shrink: 0; padding-top: 1px; }
+    .section-list .s-name { font-size: 15px; font-weight: 700; color: #1e3a5f; }
+    .section-list .s-desc { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: block; width: 100%; padding: 17px; border: none;
+      border-radius: 14px; font-size: 17px; font-weight: 700;
+      cursor: pointer; transition: transform 0.1s, opacity 0.1s;
+      text-align: center; letter-spacing: -0.2px;
+    }
+    .btn:active { transform: scale(0.97); opacity: 0.9; }
+    .btn-primary { background: #2563eb; color: white; }
+    .btn-secondary { background: #f1f5f9; color: #1e3a5f; }
+
+    /* ── Section Intro ── */
+    .sec-intro { text-align: center; padding: 20px 0 4px; }
+    .sec-intro .emoji { font-size: 52px; line-height: 1; }
+    .sec-intro .label {
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.2px; color: #2563eb; margin: 16px 0 6px;
+    }
+    .sec-intro h2 { font-size: 26px; font-weight: 800; color: #1e3a5f; margin-bottom: 8px; }
+    .sec-intro p { font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 24px; }
+
+    /* ── Progress bar ── */
+    .top-bar { padding: 14px 0 10px; }
+    .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .sec-badge {
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.6px; color: #2563eb; background: #eff6ff;
+      padding: 5px 12px; border-radius: 100px;
+    }
+    .q-count { font-size: 13px; color: #94a3b8; font-weight: 600; }
+    .progress-bar { background: #e2e8f0; border-radius: 100px; height: 5px; overflow: hidden; }
+    .progress-fill {
+      height: 100%; border-radius: 100px;
+      background: linear-gradient(90deg, #2563eb, #60a5fa);
+      transition: width 0.4s ease;
+    }
+
+    /* ── Passage / Scenario ── */
+    .ref-container { margin-bottom: 12px; }
+    .ref-toggle {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; background: #f8fafc; border: 1.5px solid #e2e8f0;
+      border-radius: 12px 12px 0 0; padding: 12px 16px; cursor: pointer;
+      font-size: 14px; font-weight: 700; color: #475569;
+    }
+    .ref-toggle.closed { border-radius: 12px; }
+    .ref-arrow { font-size: 11px; transition: transform 0.2s; }
+    .ref-toggle.closed .ref-arrow { transform: rotate(-90deg); }
+    .ref-body {
+      background: #f8fafc; border: 1.5px solid #e2e8f0; border-top: none;
+      border-radius: 0 0 12px 12px; padding: 14px 16px;
+      font-size: 14px; line-height: 1.75; color: #374151;
+      max-height: 230px; overflow-y: auto;
+    }
+    .ref-body p { margin-bottom: 10px; }
+    .ref-body p:last-child { margin-bottom: 0; }
+
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+    .data-table th {
+      background: #e0e7ff; color: #1e3a5f; font-weight: 700;
+      padding: 8px 10px; text-align: left; border: 1px solid #c7d2fe;
+    }
+    .data-table td { padding: 8px 10px; border: 1px solid #e2e8f0; text-align: center; }
+    .data-table tr:nth-child(even) td { background: #f8fafc; }
+    .data-table th:first-child, .data-table td:first-child { text-align: left; }
+
+    /* ── Question ── */
+    .question-text { font-size: 17px; font-weight: 600; line-height: 1.6; color: #1a202c; margin-bottom: 18px; }
+    .choices { display: flex; flex-direction: column; gap: 10px; }
+
+    .choice {
+      display: flex; align-items: flex-start; gap: 13px;
+      padding: 14px; background: white; border: 2px solid #e2e8f0;
+      border-radius: 13px; cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      text-align: left; width: 100%;
+    }
+    .choice:active { transform: scale(0.99); }
+    .choice.selected { border-color: #2563eb; background: #eff6ff; }
+    .choice.correct   { border-color: #16a34a; background: #f0fdf4; }
+    .choice.wrong     { border-color: #dc2626; background: #fef2f2; }
+    .choice:disabled  { cursor: default; }
+
+    .c-letter {
+      width: 30px; height: 30px; border-radius: 50%; background: #f1f5f9;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; color: #64748b; flex-shrink: 0;
+      transition: background 0.15s, color 0.15s;
+    }
+    .choice.selected .c-letter { background: #2563eb; color: white; }
+    .choice.correct  .c-letter { background: #16a34a; color: white; }
+    .choice.wrong    .c-letter { background: #dc2626; color: white; }
+    .c-text { font-size: 15px; line-height: 1.45; color: #374151; padding-top: 5px; }
+
+    .next-wrap { margin-top: 14px; display: none; }
+    .next-wrap.show { display: block; }
+
+    /* ── Section Complete ── */
+    .sec-complete { text-align: center; padding: 16px 0 6px; }
+    .sec-complete .emoji { font-size: 52px; }
+    .sec-complete h2 { font-size: 22px; font-weight: 800; color: #1e3a5f; margin: 12px 0 6px; }
+    .sec-complete p { font-size: 14px; color: #64748b; margin-bottom: 24px; }
+
+    /* ── Results ── */
+    .composite-card {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+      border-radius: 20px; padding: 30px 20px; text-align: center;
+      color: white; margin-bottom: 14px;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.35);
+    }
+    .c-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; opacity: 0.75; margin-bottom: 8px; }
+    .c-score { font-size: 80px; font-weight: 900; line-height: 1; margin-bottom: 4px; letter-spacing: -4px; }
+    .c-max { font-size: 18px; opacity: 0.6; margin-bottom: 14px; }
+    .c-pct { font-size: 15px; background: rgba(255,255,255,0.18); padding: 7px 18px; border-radius: 100px; display: inline-block; font-weight: 600; }
+
+    .sec-scores { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .sec-score-card { background: white; border-radius: 16px; padding: 16px 12px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+    .ss-icon { font-size: 22px; margin-bottom: 6px; }
+    .ss-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; margin-bottom: 4px; }
+    .ss-score { font-size: 36px; font-weight: 900; color: #1e3a5f; line-height: 1; margin-bottom: 4px; }
+    .ss-frac { font-size: 12px; color: #94a3b8; }
+
+    .review-title { font-size: 18px; font-weight: 800; color: #1e3a5f; margin-bottom: 16px; }
+    .review-sec-header {
+      font-size: 13px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.8px; color: #2563eb; margin: 20px 0 10px;
+      padding-bottom: 8px; border-bottom: 2px solid #eff6ff;
+    }
+    .review-sec-header:first-of-type { margin-top: 0; }
+
+    .review-q {
+      background: #f8fafc; border-radius: 13px; padding: 14px 15px;
+      margin-bottom: 10px; border-left: 3px solid #e2e8f0;
+    }
+    .review-q.correct-q { border-left-color: #16a34a; }
+    .review-q.wrong-q   { border-left-color: #dc2626; }
+
+    .rq-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .rq-text { font-size: 14px; font-weight: 600; color: #1a202c; line-height: 1.5; flex: 1; }
+    .rq-badge { font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 100px; white-space: nowrap; flex-shrink: 0; }
+    .rq-badge.ok { background: #dcfce7; color: #15803d; }
+    .rq-badge.no { background: #fee2e2; color: #b91c1c; }
+
+    .rq-answer { font-size: 13px; line-height: 1.5; margin-bottom: 4px; }
+    .rq-answer.ok { color: #15803d; font-weight: 600; }
+    .rq-answer.no { color: #b91c1c; }
+
+    .rq-exp {
+      font-size: 13px; color: #475569; line-height: 1.6;
+      background: white; border-radius: 8px; padding: 10px 12px;
+      margin-top: 8px; border-left: 3px solid #2563eb;
+    }
+
+    .loading { text-align: center; padding: 80px 20px; color: #94a3b8; font-size: 16px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div id="app"><div class="loading">Loading...</div></div>
+</div>
+
+<script>
+/* ─── Question Data ──────────────────────────────────── */
+const QUESTIONS = {
+  english: [
+    {
+      question: "Which sentence correctly uses a semicolon?",
+      choices: [
+        "I wanted to go; but it was raining.",
+        "She finished her homework; then she watched TV.",
+        "He ran; quickly down the street.",
+        "They ate; pizza and pasta for dinner."
+      ],
+      answer: 1,
+      explanation: "A semicolon connects two independent clauses. 'She finished her homework' and 'then she watched TV' are both complete independent clauses. Semicolons are not used before conjunctions like 'but' (A), or to separate a verb from a modifier (C) or object (D)."
+    },
+    {
+      question: "Choose the sentence with correct apostrophe use:",
+      choices: [
+        "The dog wagged it's tail excitedly.",
+        "Its time to leave for school.",
+        "The three sisters' bedrooms were on the top floor.",
+        "The childrens' toys were scattered everywhere."
+      ],
+      answer: 2,
+      explanation: "'Sisters'' is the correct plural possessive — add an apostrophe after the s for plural nouns. 'It's' means 'it is'; the possessive is 'its.' 'Children' is already plural, so the possessive is 'children's,' not 'childrens'.'"
+    },
+    {
+      question: "Which sentence has correct subject-verb agreement?",
+      choices: [
+        "The group of students are working on their projects.",
+        "The group of students is working on their projects.",
+        "The group of students were working on their projects.",
+        "The group of students have been working on their projects."
+      ],
+      answer: 1,
+      explanation: "The subject is 'group' (singular), not 'students.' Prepositional phrases like 'of students' don't change the subject. Singular subjects take singular verbs: 'is working.'"
+    },
+    {
+      question: "Identify the sentence with a dangling modifier:",
+      choices: [
+        "Running late, Maria missed the bus.",
+        "Running late, the bus left without her.",
+        "Because she was running late, she missed the bus.",
+        "Maria, running late, missed the bus."
+      ],
+      answer: 1,
+      explanation: "In B, 'running late' appears to modify 'the bus' — but buses don't run late in that sense. The modifier 'dangles' because the intended subject (Maria) is absent. A, C, and D all correctly attribute the action to Maria."
+    },
+    {
+      question: "Which is NOT a sentence fragment?",
+      choices: [
+        "Although the weather was cold and rainy.",
+        "The tall building on the corner of Fifth Avenue.",
+        "She decided to take a different route home.",
+        "Running as fast as she possibly could."
+      ],
+      answer: 2,
+      explanation: "C has a complete subject ('She') and predicate ('decided to take a different route home'). A is a dependent clause with no main clause. B has no verb. D has no subject."
+    },
+    {
+      question: "Which sentence uses parallel structure correctly?",
+      choices: [
+        "She enjoys reading, to write, and painting.",
+        "She enjoys reading, writing, and to paint.",
+        "She enjoys reading, writing, and painting.",
+        "She enjoys to read, writing, and painting."
+      ],
+      answer: 2,
+      explanation: "Parallel structure requires consistent grammatical forms in a series. C uses all gerunds (-ing forms): reading, writing, painting. The other options mix gerunds and infinitives ('to write,' 'to paint,' 'to read')."
+    },
+    {
+      question: "Which sentence correctly uses 'affect' vs. 'effect'?",
+      choices: [
+        "The weather will effect your mood.",
+        "What affect does stress have on health?",
+        "The medication had a positive effect on her symptoms.",
+        "How does lack of sleep effect concentration?"
+      ],
+      answer: 2,
+      explanation: "'Effect' is typically a noun (a result); 'affect' is typically a verb (to influence). C uses 'effect' correctly as a noun. A and D incorrectly use 'effect' as a verb. B uses 'affect' incorrectly as a noun."
+    },
+    {
+      question: "Choose the sentence that avoids redundancy:",
+      choices: [
+        "She returned back to her hometown.",
+        "The end result was disappointing.",
+        "He gave a brief summary of the meeting.",
+        "They made a final conclusion at the end."
+      ],
+      answer: 2,
+      explanation: "C is the only clean option. A is redundant ('returned' already implies going back). B is redundant ('result' already implies an ending). D piles up 'final,' 'conclusion,' and 'at the end' — all meaning the same thing."
+    },
+    {
+      question: "Which sentence is grammatically correct?",
+      choices: [
+        "Between you and I, this plan is flawed.",
+        "Between you and me, this plan is flawed.",
+        "Between you and myself, this plan is flawed.",
+        "Between us and I, this plan is flawed."
+      ],
+      answer: 1,
+      explanation: "'Between' is a preposition, so it takes object pronouns. 'Me' (not 'I' or 'myself') is the correct object pronoun. 'Between you and I' is a very common hypercorrection."
+    },
+    {
+      question: "Which punctuation correctly completes this sentence: 'He had one goal ___ to win the championship.'",
+      choices: ["comma (,)", "semicolon (;)", "colon (:)", "period (.)"],
+      answer: 2,
+      explanation: "A colon introduces an explanation or appositive after a complete independent clause. 'He had one goal' is a complete clause, and what follows explains what that goal is. A semicolon would require two independent clauses, which 'to win the championship' is not."
+    }
+  ],
+
+  math: [
+    {
+      question: "If 3x + 7 = 22, what is the value of x?",
+      choices: ["3", "5", "7", "9"],
+      answer: 1,
+      explanation: "Subtract 7 from both sides: 3x = 15. Then divide both sides by 3: x = 5."
+    },
+    {
+      question: "What is the slope of the line passing through points (2, 3) and (6, 11)?",
+      choices: ["1", "2", "3", "4"],
+      answer: 1,
+      explanation: "Slope = (y₂ − y₁) / (x₂ − x₁) = (11 − 3) / (6 − 2) = 8 / 4 = 2."
+    },
+    {
+      question: "A circle has a radius of 5. What is its area? (Use π ≈ 3.14)",
+      choices: ["15.7", "31.4", "78.5", "157.0"],
+      answer: 2,
+      explanation: "Area = πr² = 3.14 × 5² = 3.14 × 25 = 78.5 square units."
+    },
+    {
+      question: "What is the value of sin(30°)?",
+      choices: ["√3/2 ≈ 0.87", "1/2 = 0.5", "√2/2 ≈ 0.71", "1"],
+      answer: 1,
+      explanation: "sin(30°) = 1/2. This comes from the 30-60-90 triangle, where the sides are in ratio 1 : √3 : 2. The sine of 30° is the side opposite (1) over the hypotenuse (2) = 1/2."
+    },
+    {
+      question: "Factor the expression: x² − 9",
+      choices: ["(x − 3)²", "(x + 3)(x − 3)", "(x + 9)(x − 1)", "(x − 3)(x − 3)"],
+      answer: 1,
+      explanation: "This is a difference of squares: a² − b² = (a + b)(a − b). So x² − 9 = x² − 3² = (x + 3)(x − 3)."
+    },
+    {
+      question: "A triangle has sides of length 3, 4, and 5. What type of triangle is it?",
+      choices: ["Acute", "Obtuse", "Right", "Equilateral"],
+      answer: 2,
+      explanation: "Check the Pythagorean theorem: 3² + 4² = 9 + 16 = 25 = 5². Since a² + b² = c², this is a right triangle. The 3-4-5 triangle is the most common Pythagorean triple."
+    },
+    {
+      question: "Solve for x: 2x² − 8 = 0",
+      choices: ["x = ±1", "x = ±2", "x = ±4", "x = ±8"],
+      answer: 1,
+      explanation: "Add 8 to both sides: 2x² = 8. Divide by 2: x² = 4. Take the square root: x = ±2."
+    },
+    {
+      question: "What is 15% of 240?",
+      choices: ["24", "30", "36", "48"],
+      answer: 2,
+      explanation: "15% × 240 = 0.15 × 240 = 36. You can also break it down: 10% of 240 = 24, and 5% of 240 = 12. Then 24 + 12 = 36."
+    },
+    {
+      question: "The average of five numbers is 12. Four of the numbers are 8, 10, 14, and 16. What is the fifth number?",
+      choices: ["10", "12", "14", "16"],
+      answer: 1,
+      explanation: "Total sum needed = 5 × 12 = 60. Sum of the four known numbers = 8 + 10 + 14 + 16 = 48. Fifth number = 60 − 48 = 12."
+    },
+    {
+      question: "What is the volume of a rectangular box with length 4, width 3, and height 5?",
+      choices: ["12", "20", "47", "60"],
+      answer: 3,
+      explanation: "Volume = length × width × height = 4 × 3 × 5 = 60 cubic units."
+    }
+  ],
+
+  reading: {
+    passage: "Maria had always been drawn to the ocean. As a child, she spent summers at her grandmother's coastal cottage, learning to identify shells and tide pool creatures. Her grandmother, a retired marine biologist, filled her granddaughter's mind with stories of bioluminescent jellyfish and deep-sea creatures that existed in perpetual darkness.\n\nWhen Maria enrolled in university, her choice of marine biology as a major surprised no one who knew her. What did surprise people was her senior thesis topic: the psychological effects of ocean noise pollution on cetaceans — whales and dolphins. Her faculty advisor questioned whether the scope was too broad, but Maria had spent three years gathering data from hydrophone recordings across the Pacific.\n\nHer research revealed something unsettling: commercial shipping lanes had increased ambient ocean noise by nearly 15 decibels over the past fifty years. For cetaceans that rely on echolocation and complex vocal communication, this change wasn't merely inconvenient — it was potentially catastrophic. Whales were documented calling at higher frequencies and greater volumes, like people shouting over a loud crowd. Some populations had altered their migration routes entirely.\n\nMaria's thesis won the department's highest honor. But she took little satisfaction in the academic recognition. The data, she felt, demanded more than a prize — it demanded action.",
+    questions: [
+      {
+        question: "According to the passage, what did Maria study for her senior thesis?",
+        choices: ["The migration patterns of deep-sea fish","The effects of ocean noise pollution on whales and dolphins","Bioluminescent jellyfish behavior","The history of commercial shipping lanes"],
+        answer: 1,
+        explanation: "The passage states her thesis topic was 'the psychological effects of ocean noise pollution on cetaceans — whales and dolphins.' The other choices reference details mentioned in the passage, but none were her thesis topic."
+      },
+      {
+        question: "The word 'cetaceans' as used in the passage refers to:",
+        choices: ["Deep-sea creatures that live in darkness","Bioluminescent jellyfish","Whales and dolphins","Hydrophone recording devices"],
+        answer: 2,
+        explanation: "The passage defines cetaceans directly after the term: 'cetaceans — whales and dolphins.' This is an appositive definition, where the author immediately clarifies a technical term."
+      },
+      {
+        question: "What evidence did Maria use to support her research?",
+        choices: ["Interviews with commercial ship captains","Hydrophone recordings across the Pacific","Data from her grandmother's marine biology career","Observations from underwater diving expeditions"],
+        answer: 1,
+        explanation: "The passage states: 'Maria had spent three years gathering data from hydrophone recordings across the Pacific.' None of the other answer choices are mentioned as research methods."
+      },
+      {
+        question: "According to the passage, how did whales respond to increased ocean noise?",
+        choices: ["By migrating to deeper waters","By communicating less frequently","By calling at higher frequencies and greater volumes","By developing new echolocation techniques"],
+        answer: 2,
+        explanation: "The passage states: 'Whales were documented calling at higher frequencies and greater volumes, like people shouting over a loud crowd.' Some also altered migration routes, but that is a separate response listed afterward."
+      },
+      {
+        question: "What is the main purpose of the first paragraph?",
+        choices: ["To describe the scientific field of marine biology","To establish the origins of Maria's passion for the ocean","To introduce the problem of ocean noise pollution","To explain the biology of bioluminescent jellyfish"],
+        answer: 1,
+        explanation: "The first paragraph focuses entirely on Maria's childhood — summers at the cottage, her grandmother's stories, her early love of ocean life. Its purpose is to establish why she became passionate about the ocean, setting up her later research."
+      },
+      {
+        question: "By how much had ambient ocean noise increased over fifty years, according to Maria's research?",
+        choices: ["Decreased by 15 decibels","Remained roughly constant","Increased by nearly 15 decibels","Increased by 50 decibels"],
+        answer: 2,
+        explanation: "The passage states: 'commercial shipping lanes had increased ambient ocean noise by nearly 15 decibels over the past fifty years.' This is a direct fact stated in the passage."
+      },
+      {
+        question: "The simile 'like people shouting over a loud crowd' is used to:",
+        choices: ["Describe how loud commercial ships have become","Illustrate how whales adapted their communication to increased noise","Explain why hydrophones are necessary for research","Suggest that ocean noise is a natural and harmless phenomenon"],
+        answer: 1,
+        explanation: "The simile immediately follows the description of whales 'calling at higher frequencies and greater volumes.' It helps readers understand the whales' behavior by comparing it to a familiar human experience — raising your voice to be heard over background noise."
+      },
+      {
+        question: "Which word best describes Maria's attitude at the end of the passage?",
+        choices: ["Proud and satisfied","Relieved and grateful","Troubled and driven","Confused and uncertain"],
+        answer: 2,
+        explanation: "Maria felt 'little satisfaction' in winning the award, and believed the data 'demanded action' rather than just a prize. This shows she was troubled by the problem her research revealed and motivated to do something meaningful about it."
+      },
+      {
+        question: "What can be inferred about Maria's faculty advisor?",
+        choices: ["He was enthusiastic about her thesis topic from the start","He had published similar research on ocean noise","He doubted whether her project was manageable in scope","He encouraged her to study migration patterns instead"],
+        answer: 2,
+        explanation: "'Her faculty advisor questioned whether the scope was too broad' — this implies he had doubts about whether the topic was too ambitious for a senior thesis. The passage does not suggest enthusiasm, prior research, or a different recommendation."
+      },
+      {
+        question: "Which statement best summarizes the main idea of the passage?",
+        choices: ["Marine biologists often face skepticism from their academic peers.","Ocean noise pollution is caused primarily by commercial shipping.","A researcher's personal passion drives her to uncover and respond to a critical environmental problem.","Academic recognition matters more than real-world environmental impact."],
+        answer: 2,
+        explanation: "The passage traces Maria's journey from childhood passion to impactful research, showing how personal connection motivated her to investigate a serious environmental issue — and how she wanted to do more than just win an award."
+      }
+    ]
+  },
+
+  science: {
+    scenario: "A researcher studied the effect of temperature on the growth rate of a specific bacterial strain. Five groups of bacteria were cultivated in identical conditions for 24 hours, each at a different temperature. A higher colony count and a shorter doubling time both indicate faster bacterial growth.",
+    tableHeaders: ["Temperature (°C)", "Colony Count (×10³)", "Doubling Time (hrs)"],
+    tableRows: [["20°C","14","3.8"],["25°C","28","2.9"],["30°C","52","2.1"],["37°C","98","1.4"],["42°C","31","2.7"]],
+    questions: [
+      {
+        question: "At which temperature did the bacteria grow the fastest?",
+        choices: ["25°C","30°C","37°C","42°C"],
+        answer: 2,
+        explanation: "The highest colony count (98 × 10³) and shortest doubling time (1.4 hours) both occurred at 37°C, indicating the fastest growth rate of the five groups tested."
+      },
+      {
+        question: "What happens to doubling time as temperature increases from 20°C to 37°C?",
+        choices: ["It increases steadily","It decreases steadily","It stays the same","It first decreases, then increases"],
+        answer: 1,
+        explanation: "Doubling time decreases from 3.8 hours at 20°C to 1.4 hours at 37°C, meaning bacteria divide more quickly as temperature rises within this range. A shorter doubling time means faster growth."
+      },
+      {
+        question: "Based on the data, how does bacterial growth at 42°C compare to 37°C?",
+        choices: ["Growth is faster at 42°C","Growth is slower at 42°C","Growth rate is identical at both temperatures","No conclusions can be drawn from the data"],
+        answer: 1,
+        explanation: "Colony count dropped from 98 to 31 (×10³), and doubling time increased from 1.4 to 2.7 hours at 42°C — both indicate clearly slower growth compared to 37°C."
+      },
+      {
+        question: "Which temperature most likely represents the optimal growth temperature for this bacterial strain?",
+        choices: ["20°C","30°C","37°C","42°C"],
+        answer: 2,
+        explanation: "The optimal growth temperature is where growth is fastest. At 37°C, the bacteria had the highest colony count (98 × 10³) and shortest doubling time (1.4 hrs), making it the optimal temperature among those tested."
+      },
+      {
+        question: "A scientist predicts that at 50°C, bacterial growth would be even slower than at 42°C. Which best describes this prediction?",
+        choices: ["Fully supported — the data directly tests growth at 50°C","Unsupported — the data shows growth always increases with temperature","Supported by the trend in the data, but goes beyond the measured range","Impossible to evaluate without knowing the bacterial species"],
+        answer: 2,
+        explanation: "The data only extends to 42°C, so the prediction is an extrapolation. However, growth already slowed between 37°C and 42°C, supporting the trend. C accurately describes this as trend-based but beyond the data range."
+      },
+      {
+        question: "How does the colony count at 30°C compare to the colony count at 20°C?",
+        choices: ["About the same","About twice as large","About three to four times larger","About ten times larger"],
+        answer: 2,
+        explanation: "52 ÷ 14 ≈ 3.7 — the colony count at 30°C is roughly 3 to 4 times larger than at 20°C."
+      },
+      {
+        question: "Which best describes the overall relationship between temperature and colony count across all five data points?",
+        choices: ["Colony count increases linearly as temperature increases","Colony count decreases as temperature increases","Colony count peaks at an intermediate temperature, then declines","Colony count is unrelated to temperature"],
+        answer: 2,
+        explanation: "Colony count increases from 20°C to 37°C, then decreases at 42°C — forming an inverted U-shape with a peak at 37°C."
+      },
+      {
+        question: "A scientist wants to slow bacterial growth as much as possible while still allowing some growth. Based only on the data, which temperature should they use?",
+        choices: ["Below 20°C","20°C","25°C","42°C"],
+        answer: 1,
+        explanation: "Among the temperatures tested where growth did occur, 20°C produced the fewest colonies (14 × 10³) and the longest doubling time (3.8 hrs), indicating the slowest growth. The data does not include results below 20°C."
+      },
+      {
+        question: "What is the difference in doubling time between the fastest-growing and slowest-growing temperature groups?",
+        choices: ["1.4 hours","2.4 hours","3.8 hours","5.2 hours"],
+        answer: 1,
+        explanation: "Fastest growth: 37°C (1.4 hrs). Slowest growth: 20°C (3.8 hrs). Difference = 3.8 − 1.4 = 2.4 hours."
+      },
+      {
+        question: "If the researcher added a sixth group tested at 34°C, which result would be most consistent with the existing data?",
+        choices: ["Colony count ≈ 10 (×10³), doubling time ≈ 4.5 hrs","Colony count ≈ 70 (×10³), doubling time ≈ 1.8 hrs","Colony count ≈ 100 (×10³), doubling time ≈ 1.3 hrs","Colony count ≈ 5 (×10³), doubling time ≈ 6.0 hrs"],
+        answer: 1,
+        explanation: "34°C falls between 30°C (52 × 10³, 2.1 hrs) and 37°C (98 × 10³, 1.4 hrs). An intermediate result — roughly 70 × 10³ colonies and 1.8 hrs doubling time — best fits the trend. C would exceed the 37°C peak, which doesn't fit."
+      }
+    ]
+  }
+};
+
+/* ─── Scoring ────────────────────────────────────────── */
+const SCORE_MAP = [1, 8, 11, 14, 16, 18, 21, 24, 28, 32, 36];
+
+function getPercentile(score) {
+  if (score >= 34) return "99th+";
+  if (score >= 30) return "95th–99th";
+  if (score >= 27) return "88th–94th";
+  if (score >= 24) return "74th–87th";
+  if (score >= 21) return "60th–73rd";
+  if (score >= 18) return "46th–59th";
+  if (score >= 15) return "28th–45th";
+  if (score >= 12) return "14th–27th";
+  if (score >= 9)  return "6th–13th";
+  return "Below 6th";
+}
+
+function calcScore() {
+  const sections = ['english','math','reading','science'];
+  const results = {};
+
+  sections.forEach(sec => {
+    const qs    = getQuestions(sec);
+    const given = state.answers[sec];
+    let correct = 0;
+    const qResults = qs.map((q, i) => {
+      const ua = (given[i] !== undefined) ? given[i] : -1;
+      const ok = (ua === q.answer);
+      if (ok) correct++;
+      return { question: q.question, choices: q.choices, user_answer: ua, correct_answer: q.answer, is_correct: ok, explanation: q.explanation };
+    });
+    results[sec] = { correct, total: qs.length, act_score: SCORE_MAP[correct], question_results: qResults };
+  });
+
+  const scores    = sections.map(s => results[s].act_score);
+  const composite = Math.round(scores.reduce((a,b) => a+b, 0) / 4);
+  return { sections: results, composite, percentile: getPercentile(composite) };
+}
+
+/* ─── App State ──────────────────────────────────────── */
+const SECTIONS = ['english','math','reading','science'];
+const NAMES  = { english: 'English', math: 'Mathematics', reading: 'Reading', science: 'Science' };
+const ICONS  = { english: '✏️', math: '📐', reading: '📖', science: '🔬' };
+const DESCS  = {
+  english: '10 questions on grammar, punctuation & sentence structure',
+  math:    '10 questions on algebra, geometry & trigonometry',
+  reading: 'Read a short passage, then answer 10 comprehension questions',
+  science: 'Analyze a data table, then answer 10 interpretation questions'
+};
+
+let state = {
+  screen:   'intro',
+  secIdx:   0,
+  qIdx:     0,
+  answers:  { english: [], math: [], reading: [], science: [] },
+  selected: null,
+  answered: false,
+  passOpen: true,
+  results:  null
+};
+
+const app = document.getElementById('app');
+
+function render() {
+  window.scrollTo(0, 0);
+  switch (state.screen) {
+    case 'intro':        renderIntro();        break;
+    case 'sec_intro':    renderSecIntro();     break;
+    case 'question':     renderQuestion();     break;
+    case 'sec_complete': renderSecComplete();  break;
+    case 'results':      renderResults();      break;
+  }
+}
+
+/* ─── Screens ────────────────────────────────────────── */
+function renderIntro() {
+  app.innerHTML = `
+    <div class="intro-hero">
+      <div class="emoji">🎓</div>
+      <h1>Mini ACT Practice</h1>
+      <p>40 questions across all 4 ACT sections.<br>See your estimated score at the end.</p>
+    </div>
+    <div class="card">
+      <ul class="section-list">
+        ${SECTIONS.map(s => `
+          <li>
+            <div class="s-icon">${ICONS[s]}</div>
+            <div><div class="s-name">${NAMES[s]}</div><div class="s-desc">${DESCS[s]}</div></div>
+          </li>`).join('')}
+      </ul>
+      <button class="btn btn-primary" onclick="startTest()">Start Test →</button>
+    </div>`;
+}
+
+function renderSecIntro() {
+  const s = SECTIONS[state.secIdx];
+  app.innerHTML = `
+    <div class="card">
+      <div class="sec-intro">
+        <div class="emoji">${ICONS[s]}</div>
+        <div class="label">Section ${state.secIdx + 1} of 4</div>
+        <h2>${NAMES[s]}</h2>
+        <p>${DESCS[s]}</p>
+        <button class="btn btn-primary" onclick="beginSection()">Begin Section →</button>
+      </div>
+    </div>`;
+}
+
+function renderQuestion() {
+  const sec  = SECTIONS[state.secIdx];
+  const qs   = getQuestions(sec);
+  const q    = qs[state.qIdx];
+  const ltrs = ['A','B','C','D'];
+  const done = SECTIONS.slice(0, state.secIdx).length * 10 + state.qIdx;
+  const pct  = (done / 40 * 100).toFixed(1);
+  const hasRef   = sec === 'reading' || sec === 'science';
+  const refLabel = sec === 'reading' ? '📖 Reading Passage' : '🔬 Data Table & Notes';
+
+  app.innerHTML = `
+    <div class="top-bar">
+      <div class="top-row">
+        <span class="sec-badge">${NAMES[sec]}</span>
+        <span class="q-count">Question ${state.qIdx + 1} / 10</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    ${hasRef ? `
+    <div class="ref-container">
+      <button class="ref-toggle ${state.passOpen ? '' : 'closed'}" id="refToggle" onclick="toggleRef()">
+        <span>${refLabel}</span><span class="ref-arrow">▼</span>
+      </button>
+      <div class="ref-body" id="refBody" style="display:${state.passOpen ? 'block' : 'none'}">
+        ${renderRefContent(sec)}
+      </div>
+    </div>` : ''}
+    <div class="card">
+      <div class="question-text">${q.question}</div>
+      <div class="choices" id="choices">
+        ${q.choices.map((ch, i) => `
+          <button class="choice" id="c${i}" onclick="pick(${i})">
+            <span class="c-letter">${ltrs[i]}</span>
+            <span class="c-text">${ch}</span>
+          </button>`).join('')}
+      </div>
+      <div class="next-wrap" id="nextWrap">
+        <button class="btn btn-primary" onclick="advance()">
+          ${state.qIdx < 9 ? 'Next Question →' : (state.secIdx < 3 ? 'Next Section →' : 'See My Score →')}
+        </button>
+      </div>
+    </div>`;
+}
+
+function renderRefContent(sec) {
+  if (sec === 'reading') {
+    return QUESTIONS.reading.passage.split('\n\n').map(p => `<p>${p}</p>`).join('');
+  }
+  const { scenario, tableHeaders, tableRows } = QUESTIONS.science;
+  const heads = tableHeaders.map(h => `<th>${h}</th>`).join('');
+  const rows  = tableRows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('');
+  return `<p>${scenario}</p><table class="data-table"><thead><tr>${heads}</tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function renderSecComplete() {
+  const prev = SECTIONS[state.secIdx - 1];
+  const next = SECTIONS[state.secIdx];
+  app.innerHTML = `
+    <div class="card">
+      <div class="sec-complete">
+        <div class="emoji">✅</div>
+        <h2>${NAMES[prev]} Complete!</h2>
+        <p>Up next: ${ICONS[next]} ${NAMES[next]}</p>
+        <button class="btn btn-primary" onclick="continueToNext()">Continue →</button>
+      </div>
+    </div>`;
+}
+
+function renderResults() {
+  const r    = state.results;
+  const ltrs = ['A','B','C','D'];
+  app.innerHTML = `
+    <div class="composite-card">
+      <div class="c-label">Estimated ACT Composite Score</div>
+      <div class="c-score">${r.composite}</div>
+      <div class="c-max">out of 36</div>
+      <div class="c-pct">≈ ${r.percentile} percentile</div>
+    </div>
+    <div class="sec-scores">
+      ${SECTIONS.map(s => `
+        <div class="sec-score-card">
+          <div class="ss-icon">${ICONS[s]}</div>
+          <div class="ss-name">${NAMES[s]}</div>
+          <div class="ss-score">${r.sections[s].act_score}</div>
+          <div class="ss-frac">${r.sections[s].correct}/10 correct</div>
+        </div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="review-title">Answer Review</div>
+      ${SECTIONS.map(sec => `
+        <div class="review-sec-header">${ICONS[sec]} ${NAMES[sec]}</div>
+        ${r.sections[sec].question_results.map((qr, i) => {
+          const uL = qr.user_answer >= 0 ? ltrs[qr.user_answer] : '—';
+          const cL = ltrs[qr.correct_answer];
+          const ok = qr.is_correct;
+          return `
+            <div class="review-q ${ok ? 'correct-q' : 'wrong-q'}">
+              <div class="rq-top">
+                <div class="rq-text">${i+1}. ${qr.question}</div>
+                <span class="rq-badge ${ok ? 'ok' : 'no'}">${ok ? '✓ Correct' : '✗ Wrong'}</span>
+              </div>
+              ${ok
+                ? `<div class="rq-answer ok">✓ ${cL}. ${qr.choices[qr.correct_answer]}</div>`
+                : `<div class="rq-answer no">Your answer: ${uL}. ${qr.user_answer >= 0 ? qr.choices[qr.user_answer] : 'Not answered'}</div>
+                   <div class="rq-answer ok">Correct: ${cL}. ${qr.choices[qr.correct_answer]}</div>`}
+              <div class="rq-exp">${qr.explanation}</div>
+            </div>`;
+        }).join('')}`).join('')}
+      <button class="btn btn-secondary" style="margin-top:20px" onclick="restart()">Take It Again</button>
+    </div>`;
+}
+
+/* ─── Helpers & Actions ──────────────────────────────── */
+function getQuestions(sec) {
+  if (sec === 'reading') return QUESTIONS.reading.questions;
+  if (sec === 'science') return QUESTIONS.science.questions;
+  return QUESTIONS[sec];
+}
+
+function startTest()     { state.secIdx = 0; state.screen = 'sec_intro'; render(); }
+function beginSection()  { state.qIdx = 0; state.selected = null; state.answered = false; state.passOpen = true; state.screen = 'question'; render(); }
+function continueToNext(){ state.screen = 'sec_intro'; render(); }
+
+function toggleRef() {
+  state.passOpen = !state.passOpen;
+  const body   = document.getElementById('refBody');
+  const toggle = document.getElementById('refToggle');
+  if (body)   body.style.display = state.passOpen ? 'block' : 'none';
+  if (toggle) toggle.classList.toggle('closed', !state.passOpen);
+}
+
+function pick(idx) {
+  if (state.answered) return;
+  state.selected = idx;
+  state.answered = true;
+  const q = getQuestions(SECTIONS[state.secIdx])[state.qIdx];
+  document.querySelectorAll('.choice').forEach((el, i) => {
+    el.disabled = true;
+    const letter = el.querySelector('.c-letter');
+    if (i === q.answer) {
+      el.classList.add('correct');
+      letter.style.background = '#16a34a'; letter.style.color = 'white';
+    } else if (i === idx && i !== q.answer) {
+      el.classList.add('wrong');
+      letter.style.background = '#dc2626'; letter.style.color = 'white';
+    }
+  });
+  document.getElementById('nextWrap').classList.add('show');
+}
+
+function advance() {
+  const sec = SECTIONS[state.secIdx];
+  state.answers[sec][state.qIdx] = state.selected ?? -1;
+  if (state.qIdx < 9) {
+    state.qIdx++;
+    state.selected = null;
+    state.answered = false;
+    state.passOpen = false;
+    render();
+  } else {
+    state.secIdx++;
+    if (state.secIdx < 4) {
+      state.screen = 'sec_complete'; render();
+    } else {
+      state.results = calcScore();
+      state.screen  = 'results';
+      render();
+    }
+  }
+}
+
+function restart() {
+  state = { screen: 'intro', secIdx: 0, qIdx: 0, answers: { english: [], math: [], reading: [], science: [] }, selected: null, answered: false, passOpen: true, results: null };
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
